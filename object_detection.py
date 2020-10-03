@@ -108,7 +108,7 @@ def run_inference_for_single_image(image, graph):
             output_dict = sess.run(tensor_dict,
                                    feed_dict={image_tensor: np.expand_dims(image, 0)})
             boxes = np.squeeze(output_dict['detection_boxes'])
-            scores = np.squeeze(output_dict['scores'])
+            scores = np.squeeze(output_dict['detection_scores'])
             classes = np.squeeze(output_dict['detection_classes'])
 
             indices = np.argwhere(classes == 2)
@@ -124,7 +124,7 @@ def run_inference_for_single_image(image, graph):
             output_dict['detection_scores'] = output_dict['detection_scores'][0]
             if 'detection_masks' in output_dict:
                 output_dict['detection_masks'] = output_dict['detection_masks'][0]
-    return output_dict
+    return boxes,scores,classes,output_dict
   
 # Process video
 cap = cv2.VideoCapture(VIDEO_PATH)
@@ -140,7 +140,7 @@ while(cap.isOpened()):
     # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
     image_np_expanded = np.expand_dims(image_np, axis=0)
     # Actual detection.
-    output_dict = run_inference_for_single_image(image_np, detection_graph)
+    boxes,classes,scores,output_dict = run_inference_for_single_image(image_np, detection_graph)
     vis_util.visualize_boxes_and_labels_on_image_array(
       image_np,
       boxes,
