@@ -130,7 +130,7 @@ while(cap.isOpened()):
     #output_image = Image.fromarray(image_np)
     out.write(image_np)
 
-    cv2.imshow('frame',image_np)
+    # cv2.imshow('frame',image_np)
     if cv2.waitKey(1) & 0xFF == ord('q'):
       break
     #else:
